@@ -1,11 +1,11 @@
 <?php
 
-function findDates ($data, $startDate, $endDate ) {
+function findDates ($data, $lastTradedDate, $startDate, $endDate ) {
     $min = 0;
     $profit = 0;
 
     foreach ( $data as $index => $datum ) {
-        if ( $datum['date'] < $startDate ) {
+        if ( $datum['date'] < $lastTradedDate ) {
             continue;
         }
 
@@ -22,7 +22,11 @@ function findDates ($data, $startDate, $endDate ) {
         }
     }
 
-    if ( $lowDate >= $highDate ) {
+    if($lowDate < $startDate) {
+        $lowDate = $startDate;
+    }
+
+    if ( $lowDate >= $highDate || $profit <= 0) {
         echo json_encode(['message' => 'do not purchase']);
 
         exit();

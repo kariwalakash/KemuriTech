@@ -29,5 +29,5 @@ $dates = array_column($array,'date');
 
 $start = findStartDate($dates, $startDate);
 
-findDates ($array, $startDate, $endDate);
+findDates ($array, $start, $startDate, $endDate);
 
