@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+
+    <style>
+        table, th, td {
+            margin-left: auto;
+            margin-right: auto;
+            border-collapse: collapse;
+            width: 500px;
+            text-align: left;
+            font-size: 20px;
+            padding: 10px;
+        }
+
+        .button {
+            background-color: white;
+            color: black;
+            padding: 5px 5px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 20px;
+            border-radius: 10px;
+            border: 1px solid #fff;
+            box-shadow: 2px 2px 2px grey;
+        }
+    </style>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+
+            $("#file").change(function () {
+                $("#findDetails").css('display', 'inline-block');
+                var formData = new FormData();
+                formData.append('file', $('#file')[0].files[0]);
+
+
+
+                $.ajax({
+                    url        : 'upload.php',
+                    type       : 'POST',
+                    data       : formData,
+                    contentType: false,
+                    processData: false,
+                    success    : function (data) {
+                        console.log(data);
+                        var startDate = new Date(data.lowestDate);
+                        var endDate = new Date(data.highestDate);
+
+                        console.log(startDate);
+                        console.log(endDate);
+
+                        if (startDate.getTime() === endDate.getTime()) {
+                            alert('start and end dates are the same, cannot proceed further');
+                            $("#findDetails").css('display', 'none');
+
+                        }
+
+                        $('#startDate').prop('min', function(){
+                            return data.lowestDate;
+                        });
+                        $('#startDate').prop('max', function(){
+                            return data.highestDate;
+                        });
+                        $('#startDate').prop('value', function(){
+                            return data.lowestDate;
+                        });
+
+                        $('#endDate').prop('min', function(){
+                            return data.lowestDate;
+                        });
+                        $('#endDate').prop('max', function(){
+                            return data.highestDate;
+                        });
+                        $('#endDate').prop('value', function(){
+                            return data.lowestDate;
+                        });
+
+                        var list = document.getElementById('search');
+                        data.allShares.forEach(function(item){
+                            var option = document.createElement('option');
+                            option.value = item;
+                            option.className = 'listoption';
+                            list.appendChild(option);
+                        });
+
+
+                    }
+                });
+            });
+
+            $("#findShares").change(function () {
+                $("#findDetails").css('display', 'inline-block');
+                var formData = new FormData();
+                formData.append('file', $('#file')[0].files[0]);
+                formData.append('share', $("#findShares").val());
+
+                $.ajax({
+                    url        : 'upload.php',
+                    type       : 'POST',
+                    data       : formData,
+                    contentType: false,
+                    processData: false,
+                    success    : function (data) {
+                        console.log(data);
+                        var startDate = new Date(data.lowestDate);
+                        var endDate = new Date(data.highestDate);
+
+                        console.log(startDate);
+                        console.log(endDate);
+
+                        if (startDate.getTime() === endDate.getTime()) {
+                            alert('start and end dates are the same, cannot proceed further');
+                            $("#findDetails").css('display', 'none');
+
+                        }
+
+                        $('#startDate').prop('min', function(){
+                            return data.lowestDate;
+                        });
+                        $('#startDate').prop('max', function(){
+                            return data.highestDate;
+                        });
+                        $('#startDate').prop('value', function(){
+                            return data.lowestDate;
+                        });
+
+                        $('#endDate').prop('min', function(){
+                            return data.lowestDate;
+                        });
+                        $('#endDate').prop('max', function(){
+                            return data.highestDate;
+                        });
+                        $('#endDate').prop('value', function(){
+                            return data.lowestDate;
+                        });
+
+                    }
+                });
+
+            });
+
+
+            $("#mainForm").submit(function () {
+                var formData = new FormData();
+                formData.append('file', $('#file')[0].files[0]);
+                formData.append('share', $("#findShares").val());
+                formData.append('startDate', $("#startDate").val());
+                formData.append('endDate', $("#endDate").val());
+
+                $.ajax({
+                    url        : 'api.php',
+                    type       : 'POST',
+                    data       : formData,
+                    contentType: false,
+                    processData: false,
+                    success    : function (data) {
+                        $("#purchase").html("purchase on : " . data.purchaseDate);
+                        $("#sale").html("sell on : " . data.saleDate);
+                    }
+                });
+
+            });
+
+        });
+    </script>
+</head>
+<body>
+<form id="mainForm" action="#" onsubmit="return false;">
+    <table id="mainTable">
+        <TR>
+            <td>
+                <div>Input the datasheet File</div>
+            </td>
+
+            <td>
+                <input type="file" name="file" id="file" class="button" style="width: 100%">
+            </td>
+        </TR>
+
+        <TR>
+            <td width="2">
+                <input list="search" id="findShares" class="button" placeholder="search...">
+                <datalist id="search"></datalist>
+            </td>
+        </TR>
+
+        <TR>
+            <td>
+                <input type="date" name="startDate" id="startDate" class="button" style="width: 95%">
+            </td>
+            <td>
+                <input type="date" name="endDate" id="endDate" class="button" style="width: 95%">
+            </td>
+        </TR>
+
+
+
+        <TR>
+            <td width="2">
+                <button id="findDetails" class="button" style="display: none">Find my data</button>
+            </td>
+        </TR>
+
+        <TR>
+            <td width="2">
+                <div id="purchase"></div>
+            </td>
+            <td width="2">
+                <div id="sale"></div>
+            </td>
+        </TR>
+    </table>
+
+</form>
+
+
+</body>
+</html>
