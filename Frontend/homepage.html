@@ -160,8 +160,12 @@
                     contentType: false,
                     processData: false,
                     success    : function (data) {
-                        $("#purchase").html("purchase on : " . data.purchaseDate);
-                        $("#sale").html("sell on : " . data.saleDate);
+                        if (data.message !== undefined) {
+                            alert(data.message);
+                        } else {
+                            $("#purchase").append("<p> purchase on : " + data.buy + "</p>");
+                            $("#sale").append("<p> sell on : " + data.sell + "</p>");
+                        }
                     }
                 });
 
